@@ -6,6 +6,8 @@ const AppRoutes = () => {
     <>
       <Routes>
         <Route path="/" element={<ChatPage />} />
+        <Route path="*" element={<ChatPage />} />
+
       </Routes>
     </>
   );

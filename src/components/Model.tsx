@@ -6,6 +6,7 @@ import ModalClose from "@mui/joy/ModalClose";
 import Typography from "@mui/joy/Typography";
 import Sheet from "@mui/joy/Sheet";
 import { Input, Stack } from "@mui/joy";
+import { Option, Select } from "@mui/joy";
 
 import { getAIResponse } from "../api/Index";
 
@@ -21,14 +22,25 @@ export default function BasicModal(props: {
   const [chatHistory, setChatHistory] = React.useState<
     { q: string; a: string }[]
   >([]);
+  const [selectedModel, setSelectedModel] = React.useState<string>("llama3.2");
+  const availableModels = ["codellama", "llama3.2", "deepseek-r1"];
 
   const chatHandler = async () => {
     // setChatHistory([...chatHistory, { q: question, a: "I don't know" }]);
     setApiCalling(true);
-    const res = await getAIResponse(question);
+    try{
+    const res = await getAIResponse({
+      question: question,
+      model: selectedModel,
+    });
     setChatHistory([...chatHistory, { q: question, a: res.response }]);
     setQuestion("");
-    setApiCalling(false);
+    setApiCalling(false);}
+    catch(e){
+      setChatHistory([...chatHistory, { q: question, a: "error occured" }]);
+      setQuestion("");
+      setApiCalling(false);
+    }
   };
 
   //scrolling at the end logic
@@ -41,6 +53,15 @@ export default function BasicModal(props: {
     scrollToBottom(); // Scroll when messages update
   }, [chatHistory]);
   //scrolling at the end logic
+
+  //model select logic://"codellama",//"llama3.2",//"deepseek-r1",
+  const handleChange = (
+    event: React.SyntheticEvent | null,
+    newValue: string | null
+  ) => {
+    setSelectedModel(newValue || "llama3.2");
+    console.log(newValue);
+  };
 
   return (
     <React.Fragment>
@@ -79,16 +100,34 @@ export default function BasicModal(props: {
             boxShadow: "lg",
           }}
         >
-          <ModalClose variant="plain" sx={{ m: 1 }} />
-          <Typography
-            component="h2"
-            id="modal-title"
-            level="h4"
-            textColor="inherit"
-            sx={{ fontWeight: "lg", mb: 1 }}
+          {/* <ModalClose variant="plain" sx={{ m: 1 }} /> */}
+          <Stack
+            sx={{
+              display: "flex",
+              flexDirection: "row-reverse",
+              justifyContent: "space-between",
+              // height: "90%",
+              // overflow:'auto'
+            }}
           >
-            {props.title}
-          </Typography>
+            <Select defaultValue={selectedModel} onChange={handleChange}>
+              {availableModels.map((model) => (
+                <Option key={model} value={model}>
+                  {model}
+                </Option>
+              ))}
+            </Select>
+            <Typography
+              component="h2"
+              id="modal-title"
+              level="h4"
+              textColor="inherit"
+              sx={{ fontWeight: "lg", mb: 1 }}
+            >
+              {props.title}
+            </Typography>
+          </Stack>
+
           <Stack
             sx={{
               display: "flex",
