@@ -41,7 +41,7 @@ export default function BasicModal(props: {
       setChatHistory([...chatHistory, { q: question, a: res.response }]);
       setQuestion("");
       setApiCalling(false);
-      setStreamResponseData(null);
+      setStreamResponseData("");
       console.log("streamResponseData",streamResponseData);
     } catch (e) {
       setChatHistory([...chatHistory, { q: question, a: "error occured" }]);
