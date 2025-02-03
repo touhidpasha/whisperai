@@ -28,7 +28,7 @@ export default function BasicModal(props: {
   const availableModels = ["codellama", "llama3.2", "deepseek-r1"];
   const [streamResponseData, setStreamResponseData] = React.useState<
     string | null
-  >("");
+  >(null);
   const chatHandler = async () => {
     // setChatHistory([...chatHistory, { q: question, a: "I don't know" }]);
     setApiCalling(true);
@@ -41,6 +41,8 @@ export default function BasicModal(props: {
       setChatHistory([...chatHistory, { q: question, a: res.response }]);
       setQuestion("");
       setApiCalling(false);
+      setStreamResponseData(null);
+      console.log("streamResponseData",streamResponseData);
     } catch (e) {
       setChatHistory([...chatHistory, { q: question, a: "error occured" }]);
       setQuestion("");
@@ -207,15 +209,9 @@ export default function BasicModal(props: {
                       }}
                     >
                       {streamResponseData ? (
-                        <Typography
-                          sx={{
-                            width: "90%",
-                            background: "#ede0ff",
-                            borderRadius: 4,
-                          }}
-                        >
-                          {streamResponseData}
-                        </Typography>
+                        <ApiResponseFormatter
+                          response={streamResponseData}
+                        ></ApiResponseFormatter>
                       ) : (
                         <Skeleton variant="text" level="h1" />
                       )}

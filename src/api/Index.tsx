@@ -4,6 +4,7 @@ export const getAIResponse = async (data: {
   setStreamResponseData: React.Dispatch<React.SetStateAction<string | null>>;
 }) => {
   let accumulatedText = "";
+  // data.setStreamResponseData("");
 
   try {
     const response = await fetch("http://localhost:11434/api/generate", {
