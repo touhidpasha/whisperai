@@ -6,7 +6,7 @@ import ModalClose from "@mui/joy/ModalClose";
 import Typography from "@mui/joy/Typography";
 import Sheet from "@mui/joy/Sheet";
 import { Input, Stack } from "@mui/joy";
-import { Option, Select } from "@mui/joy";
+import { Option, Select, Skeleton } from "@mui/joy";
 
 import { getAIResponse } from "../api/Index";
 
@@ -28,15 +28,15 @@ export default function BasicModal(props: {
   const chatHandler = async () => {
     // setChatHistory([...chatHistory, { q: question, a: "I don't know" }]);
     setApiCalling(true);
-    try{
-    const res = await getAIResponse({
-      question: question,
-      model: selectedModel,
-    });
-    setChatHistory([...chatHistory, { q: question, a: res.response }]);
-    setQuestion("");
-    setApiCalling(false);}
-    catch(e){
+    try {
+      const res = await getAIResponse({
+        question: question,
+        model: selectedModel,
+      });
+      setChatHistory([...chatHistory, { q: question, a: res.response }]);
+      setQuestion("");
+      setApiCalling(false);
+    } catch (e) {
       setChatHistory([...chatHistory, { q: question, a: "error occured" }]);
       setQuestion("");
       setApiCalling(false);
@@ -51,7 +51,7 @@ export default function BasicModal(props: {
   };
   useEffect(() => {
     scrollToBottom(); // Scroll when messages update
-  }, [chatHistory]);
+  }, [chatHistory,apiCalling]);
   //scrolling at the end logic
 
   //model select logic://"codellama",//"llama3.2",//"deepseek-r1",
@@ -137,7 +137,7 @@ export default function BasicModal(props: {
               // overflow:'auto'
             }}
           >
-            <Stack sx={{ overflow: "auto" }} pb={2}>
+            <Stack sx={{ overflow: "auto" }} pb={2} gap={2}>
               {chatHistory.map((chat, index) => (
                 <Stack
                   key={index}
@@ -147,16 +147,6 @@ export default function BasicModal(props: {
                     gap: 2,
                   }}
                 >
-                  <Stack
-                    key={index}
-                    sx={{
-                      display: "flex",
-                      flexDirection: "row",
-                      justifyContent: "flex-start",
-                      gap: 2,
-                    }}
-                  ></Stack>
-
                   <Typography
                     sx={{ background: "#ede0df", p: 1, borderRadius: 4 }}
                   >
@@ -183,6 +173,23 @@ export default function BasicModal(props: {
                   </Stack>
                 </Stack>
               ))}
+              {apiCalling && (
+                <>
+                  <Stack
+                    sx={{
+                      display: "flex",
+                      flexDirection: "column",
+                      gap: 2,
+                      m: 10,
+                    }}
+                  >
+                    <Skeleton variant="text" level="body-xs" />
+                    <Skeleton variant="text" level="h1" />
+                  </Stack>
+                  <div ref={messagesEndRef} />
+                </>
+              )}
+
               <div ref={messagesEndRef} />
             </Stack>
 
