@@ -9,6 +9,8 @@ import { Input, Stack } from "@mui/joy";
 import { Option, Select, Skeleton } from "@mui/joy";
 
 import { getAIResponse } from "../api/Index";
+import { ApiResponseFormatter } from "./ApiResponseFormatter";
+import { APIResponseFormatterWithCopyCode } from "./APIResponseFormatterWithCopyCode";
 
 export default function BasicModal(props: {
   open: boolean;
@@ -51,7 +53,7 @@ export default function BasicModal(props: {
   };
   useEffect(() => {
     scrollToBottom(); // Scroll when messages update
-  }, [chatHistory,apiCalling]);
+  }, [chatHistory, apiCalling]);
   //scrolling at the end logic
 
   //model select logic://"codellama",//"llama3.2",//"deepseek-r1",
@@ -161,7 +163,7 @@ export default function BasicModal(props: {
                       gap: 2,
                     }}
                   >
-                    <Typography
+                    {/* <Typography
                       sx={{
                         width: "90%",
                         background: "#ede0ff",
@@ -169,7 +171,11 @@ export default function BasicModal(props: {
                       }}
                     >
                       {chat.a}
-                    </Typography>
+                    </Typography> */}
+                    <ApiResponseFormatter
+                      key={index}
+                      response={chat.a}
+                    ></ApiResponseFormatter>
                   </Stack>
                 </Stack>
               ))}
