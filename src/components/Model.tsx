@@ -24,7 +24,9 @@ export default function BasicModal(props: {
   >([]);
   const [selectedModel, setSelectedModel] = React.useState<string>("llama3.2");
   const availableModels = ["codellama", "llama3.2", "deepseek-r1"];
-
+  const [streamResponseData, setStreamResponseData] = React.useState<
+    string | null
+  >("");
   const chatHandler = async () => {
     // setChatHistory([...chatHistory, { q: question, a: "I don't know" }]);
     setApiCalling(true);
@@ -32,6 +34,7 @@ export default function BasicModal(props: {
       const res = await getAIResponse({
         question: question,
         model: selectedModel,
+        setStreamResponseData: setStreamResponseData,
       });
       setChatHistory([...chatHistory, { q: question, a: res.response }]);
       setQuestion("");
@@ -51,7 +54,7 @@ export default function BasicModal(props: {
   };
   useEffect(() => {
     scrollToBottom(); // Scroll when messages update
-  }, [chatHistory,apiCalling]);
+  }, [chatHistory, apiCalling]);
   //scrolling at the end logic
 
   //model select logic://"codellama",//"llama3.2",//"deepseek-r1",
@@ -183,8 +186,34 @@ export default function BasicModal(props: {
                       m: 10,
                     }}
                   >
-                    <Skeleton variant="text" level="body-xs" />
-                    <Skeleton variant="text" level="h1" />
+                    {/* <Skeleton variant="text" level="body-xs" /> */}
+                    <Typography
+                      sx={{ background: "#ede0df", p: 1, borderRadius: 4 }}
+                    >
+                      {question}
+                    </Typography>
+                    <Stack
+                      sx={{
+                        display: "flex",
+                        flexDirection: "row",
+                        justifyContent: "flex-end",
+                        gap: 2,
+                      }}
+                    >
+                      {streamResponseData ? (
+                        <Typography
+                          sx={{
+                            width: "90%",
+                            background: "#ede0ff",
+                            borderRadius: 4,
+                          }}
+                        >
+                          {streamResponseData}
+                        </Typography>
+                      ) : (
+                        <Skeleton variant="text" level="h1" />
+                      )}
+                    </Stack>
                   </Stack>
                   <div ref={messagesEndRef} />
                 </>
